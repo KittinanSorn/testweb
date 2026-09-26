@@ -22,15 +22,15 @@
     
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
     .card { background: #1e293b; border-radius: 8px; overflow: hidden; padding: 15px; text-align: center; }
-    .card img { width: 100%; height: 250px; object-fit: cover; border-radius: 4px; }
+    .card img { width: 100%; height: 250px; object-fit: cover; border-radius: 4px; background-color: #334155; }
     .card h3 { margin: 10px 0; font-size: 18px; }
     
-    .time-btn { background: #334155; margin: 5px; padding: 6px 12px; border-radius: 4px; }
+    .time-btn { background: #334155; margin: 5px; padding: 6px 12px; border-radius: 4px; display: inline-block; cursor: pointer; }
     .time-btn:hover { background: #e11d48; }
 
     /* Seat Selection */
-    .seat-grid { display: grid; grid-template-columns: repeat(5, 40px); gap: 10px; justify-content: center; margin: 20px 0; }
-    .seat-available { width: 40px; height: 40px; background: #334155; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .seat-grid { display: grid; grid-template-columns: repeat(3, 40px); gap: 10px; justify-content: center; margin: 20px 0; }
+    .seat-available { width: 40px; height: 40px; background: #334155; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; }
     .seat-available.selected { background: #22c55e; }
 
     /* Modal */
@@ -62,11 +62,12 @@
     <section id="movies">
       <h2 class="section-title" id="title-movies">Now Showing</h2>
       <div class="grid" id="movie-list">
-        <div class="card movie-card" onclick="selectMovie('Avatar')">
-          <img src="https://via.placeholder.com/200x250/1e293b/ffffff?text=Avatar" alt="Avatar">
+        <div class="card movie-card">
+          <!-- ใช้ SVG Placeholder ในตัว ไม่ติด Error แน่นอน -->
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='250' viewBox='0 0 200 250'><rect width='100%' height='100%' fill='%23334155'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='20'>Avatar</text></svg>" alt="Avatar">
           <h3 class="title">Avatar</h3>
-          <div class="showtime time-btn" onclick="openSeats()">14:00</div>
-          <div class="showtime time-btn" onclick="openSeats()">17:30</div>
+          <div class="showtime time-btn" onclick="alert('Selected 14:00')">14:00</div>
+          <div class="showtime time-btn" onclick="alert('Selected 17:30')">17:30</div>
         </div>
       </div>
     </section>
@@ -102,7 +103,7 @@
       <h2 class="section-title" id="title-promotions">Promotions</h2>
       <div class="grid">
         <div class="card promo-card">
-          <img src="https://via.placeholder.com/300x150/e11d48/ffffff?text=Discount+50%25" alt="Promo">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'><rect width='100%' height='100%' fill='%23e11d48'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='18'>Discount 50%</text></svg>" alt="Promo">
           <h3>Student Discount 50%</h3>
         </div>
       </div>
@@ -116,7 +117,7 @@
       <h2>Login</h2>
       <br>
       <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="username" placeholder="Email / Username" style="width: 100%; padding: 8px; margin-bottom: 5px;">
+        <input type="text" id="username" placeholder="Email / Username" style="width: 100%; padding: 8px; margin-bottom: 5px; color: #000;">
         <div class="error-msg" id="error-msg">This field is required</div>
         <br><br>
         <button type="submit" style="width: 100%;">Submit</button>
@@ -125,20 +126,17 @@
   </div>
 
   <script>
-    // Language Switcher Simulation
-    let currentLang = 'en';
     function toggleLang() {
-      if(currentLang === 'en') {
-        currentLang = 'th';
-        document.getElementById('lang-btn').innerText = 'EN';
+      const btn = document.getElementById('lang-btn');
+      if (btn.innerText === 'TH') {
+        btn.innerText = 'EN';
         document.getElementById('nav-movies').innerText = 'ภาพยนตร์';
         document.getElementById('nav-cinemas').innerText = 'โรงภาพยนตร์';
         document.getElementById('nav-promotions').innerText = 'โปรโมชัน';
         document.getElementById('login-btn').innerText = 'เข้าสู่ระบบ';
         window.history.pushState({}, '', '?lang=th');
       } else {
-        currentLang = 'en';
-        document.getElementById('lang-btn').innerText = 'TH';
+        btn.innerText = 'TH';
         document.getElementById('nav-movies').innerText = 'Movies';
         document.getElementById('nav-cinemas').innerText = 'Cinemas';
         document.getElementById('nav-promotions').innerText = 'Promotions';
@@ -147,25 +145,16 @@
       }
     }
 
-    // Search Simulation
-    document.getElementById('search-input').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        alert('Searching for: ' + this.value);
-      }
-    });
-
-    // Seat Selection
     function toggleSeat(el) {
       el.classList.toggle('selected');
     }
 
-    // Modal Handling
     function openModal() { document.getElementById('loginModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('loginModal').style.display = 'none'; }
     function handleLogin(e) {
       e.preventDefault();
       const input = document.getElementById('username').value;
-      if(!input) {
+      if (!input) {
         document.getElementById('error-msg').style.display = 'block';
       } else {
         alert('LoggedIn!');
@@ -173,7 +162,6 @@
       }
     }
 
-    // Intercept Mock Data
     fetch('https://jsonplaceholder.typicode.com/todos/1')
       .then(response => response.json())
       .then(json => console.log('Mock API Loaded', json));
